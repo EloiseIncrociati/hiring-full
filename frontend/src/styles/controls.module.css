@@ -68,23 +68,29 @@
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  border: 1px solid var(--border-2);
+  /* Bordure transparente et non supprimée : la boîte reste identique, et l'état
+     de confirmation peut la révéler en posant simplement `border-color`. */
+  border: 1px solid transparent;
   border-radius: 0.5rem;
-  background-color: var(--surface-2);
+  background-color: var(--surface-3);
   color: var(--action-color);
+  box-shadow: 0 1px 3px var(--shadow);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
 /* Au repos la couleur reste discrète ; au survol, bordure et fond la reprennent
    en très faible dosage. La teinte s'affirme sans devenir criarde. */
+/* La couleur n'apparaît qu'au survol : fond légèrement teinté et bordure révélée. */
 .iconButton:hover:not(:disabled) {
   background-color: color-mix(in srgb, var(--action-color) 12%, var(--surface-3));
   border-color: color-mix(in srgb, var(--action-color) 50%, var(--border-2));
+  box-shadow: 0 2px 6px var(--shadow-strong);
   transform: translateY(-1px);
 }
 

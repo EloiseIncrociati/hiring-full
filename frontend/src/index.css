@@ -34,11 +34,66 @@
   --accent-glow: color-mix(in srgb, var(--accent) 30%, transparent);
   --accent-glow-soft: color-mix(in srgb, var(--accent) 14%, transparent);
 
+  /* Bouton plein d'accent. Volontairement un cran plus profond que --accent :
+     --accent pilote le halo de sélection, le bouton doit s'en détacher. */
+  --btn-primary: #2563eb; /* texte blanc : 5.2:1 */
+  --btn-primary-hover: #1d4ed8; /* 6.7:1 */
+  --btn-primary-text: #ffffff;
+
+  /* Voile sombre appliqué vers le bas du bouton. Il ne peut qu'ASSOMBRIR :
+     le point le plus clair du dégradé reste donc --btn-primary, dont le
+     contraste est déjà vérifié. Aucun reflet clair — rendu mat. */
+  --btn-shade: rgb(0 0 0 / 0.26);
+
+  /* Ombres tokenisées : leur opacité doit chuter sur fond clair. */
+  --shadow: rgb(0 0 0 / 0.25);
+  --shadow-strong: rgb(0 0 0 / 0.35);
+
   /* Typographie — polices chargées via <link> dans index.html */
   --font-sans: 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------
+   Thème clair — exactement les mêmes noms de tokens, d'autres valeurs.
+   Aucun composant n'est modifié : ils consomment déjà var(--…).
+   Contrastes vérifiés WCAG AA sur le texte (≥ 4.5:1).
+   --------------------------------------------------------------- */
+:root[data-theme='light'] {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --surface-3: #eef2f7;
+
+  --border: #dde3ec;
+  --border-2: #d3dae5;
+  --border-3: #bcc6d4;
+
+  --text: #0f1720; /* 17:1 sur blanc */
+  --text-2: #4a5568; /* 7.5:1 */
+  --text-3: #626c7d; /* 5.3:1 */
+
+  --accent: #2563eb; /* 5.2:1 */
+  --accent-2: #1d4ed8;
+  --accent-3: #1e40af;
+
+  --duplicate: #a16207; /* 4.9:1 — ambre désaturé */
+  --danger: #b91c1c; /* 6.5:1 — rouge brique */
+
+  /* Toujours un cran sous --accent (#2563eb ici) pour rester distinct du halo. */
+  --btn-primary: #1d4ed8; /* texte blanc : 6.7:1 */
+  --btn-primary-hover: #1e40af; /* 8.7:1 */
+
+  /* Halo et ombres nettement plus discrets : sur fond clair, la même opacité
+     produirait des taches sales au lieu d'une lumière. */
+  --accent-glow: color-mix(in srgb, var(--accent) 20%, transparent);
+  --accent-glow-soft: color-mix(in srgb, var(--accent) 9%, transparent);
+  --shadow: rgb(15 23 32 / 0.06);
+  --shadow-strong: rgb(15 23 32 / 0.1);
+
+  color-scheme: light;
 }
 
 /* ---------------------------------------------------------------
@@ -63,6 +118,15 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 
 code,

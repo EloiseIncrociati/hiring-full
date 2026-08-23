@@ -6,6 +6,7 @@ type UserGridProps = {
   readonly items: readonly SearchResultItem[]
   readonly isSelected: (instanceId: string) => boolean
   readonly isDuplicated: (userId: number) => boolean
+  readonly selectable: boolean
   readonly onToggleItem: (instanceId: string) => void
 }
 
@@ -13,6 +14,7 @@ export function UserGrid({
   items,
   isSelected,
   isDuplicated,
+  selectable,
   onToggleItem,
 }: UserGridProps) {
   return (
@@ -26,6 +28,7 @@ export function UserGrid({
             item={item}
             selected={isSelected(item.instanceId)}
             duplicated={isDuplicated(item.user.id)}
+            selectable={selectable}
             onToggle={onToggleItem}
           />
         ))}

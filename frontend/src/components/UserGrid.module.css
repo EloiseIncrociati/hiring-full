@@ -4,7 +4,20 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 0.25rem;
+
+  /* Un conteneur `overflow: auto` découpe tout ce qui dépasse de sa boîte de padding.
+     Sans marge intérieure, l'ombre et le halo des cartes de bordure sont coupés net.
+     Le padding leur réserve la place de s'estomper — plus bas, car le halo est décalé
+     vers le bas (0 10px 44px) et la dernière rangée doit respirer. */
+  padding: 0.75rem 0.75rem 1.75rem;
+
+  /* Gouttière réservée des DEUX côtés : la grille ne se décale plus à l'apparition
+     de la scrollbar, et celle-ci ne recouvre jamais la dernière colonne. */
+  scrollbar-gutter: stable both-edges;
+
+  /* Scrollbar fine et tokenisée : suit automatiquement le thème clair/sombre. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-3) transparent;
 }
 
 /* auto-fill + minmax : le nombre de colonnes s'adapte à la largeur disponible,
@@ -18,8 +31,13 @@
   gap: 0.875rem;
 }
 
+/* Repli pour les moteurs WebKit antérieurs à la prise en charge de `scrollbar-width`. */
 .scroller::-webkit-scrollbar {
   width: 0.5rem;
+}
+
+.scroller::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 .scroller::-webkit-scrollbar-thumb {

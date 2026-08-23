@@ -1,0 +1,79 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem 0.35rem 0.4rem;
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  background-color: var(--surface-2);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.toggle:hover {
+  border-color: var(--border-3);
+  color: var(--text);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+.track {
+  position: relative;
+  width: 1.85rem;
+  height: 1.05rem;
+  flex: none;
+  border-radius: 999px;
+  background-color: var(--surface-3);
+  border: 1px solid var(--border-3);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: 0.13rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: var(--text-3);
+  transform: translateY(-50%);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* État enfoncé : piloté par aria-pressed, donc le style ne peut pas diverger
+   de ce que lit un lecteur d'écran. */
+.toggle[aria-pressed='true'] {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border-2));
+}
+
+.toggle[aria-pressed='true'] .track {
+  background-color: color-mix(in srgb, var(--accent) 40%, var(--surface-3));
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border-3));
+}
+
+.toggle[aria-pressed='true'] .thumb {
+  background-color: var(--text);
+  transform: translate(0.8rem, -50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle,
+  .track,
+  .thumb {
+    transition: none;
+  }
+}

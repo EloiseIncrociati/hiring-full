@@ -56,6 +56,18 @@ async function searchTwoUsers(): Promise<UserEvent> {
   return user
 }
 
+function editModeToggle() {
+  return screen.getByRole('button', { name: /edit mode/i })
+}
+
+function themeToggle() {
+  return screen.getByRole('button', { name: /switch to (light|dark) theme/i })
+}
+
+function currentTheme() {
+  return document.documentElement.dataset.theme
+}
+
 function selectAllCheckbox() {
   // `elements?` : le libellé se met au singulier à partir d'un seul élément.
   return screen.getByRole('checkbox', { name: /elements? selected/i })
@@ -158,6 +170,179 @@ describe('App — carte utilisateur', () => {
     expect(link).toHaveAttribute('href', 'https://github.com/octocat')
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noreferrer')
+  })
+})
+
+describe('App — mode édition', () => {
+  it('est activé au chargement : tous les contrôles sont présents', async () => {
+    await searchTwoUsers()
+
+    expect(editModeToggle()).toHaveAttribute('aria-pressed', 'true')
+
+    expect(screen.getByRole('checkbox', { name: 'Select octocat' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Select defunkt' })).toBeInTheDocument()
+    expect(selectAllCheckbox()).toBeInTheDocument()
+    expect(duplicateButton()).toBeInTheDocument()
+    expect(deleteButton()).toBeInTheDocument()
+    expect(screen.getByText('0 elements selected')).toBeInTheDocument()
+  })
+
+  it('masque puis réaffiche les contrôles au fil des bascules', async () => {
+    const user = await searchTwoUsers()
+
+    await user.click(editModeToggle())
+    expect(editModeToggle()).toHaveAttribute('aria-pressed', 'false')
+
+    // Les contrôles ne sont pas dans le DOM, donc hors tabulation et hors
+    // arbre d'accessibilité — pas seulement invisibles.
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /duplicate selected users/i }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /delete selected users/i }),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText(/elements? selected/i)).not.toBeInTheDocument()
+
+    await user.click(editModeToggle())
+    expect(screen.getByRole('checkbox', { name: 'Select octocat' })).toBeInTheDocument()
+    expect(duplicateButton()).toBeInTheDocument()
+  })
+
+  it('laisse la grille consultable une fois le mode édition coupé', async () => {
+    const user = await searchTwoUsers()
+
+    await user.click(editModeToggle())
+
+    expect(screen.getByText('octocat')).toBeInTheDocument()
+    expect(screen.getByText('defunkt')).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: /view profile of octocat/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('vide la sélection en quittant le mode édition', async () => {
+    const user = await searchTwoUsers()
+
+    await user.click(selectAllCheckbox())
+    expect(screen.getByText('2 elements selected')).toBeInTheDocument()
+
+    // Sortie : les contrôles disparaissent.
+    await user.click(editModeToggle())
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+
+    // Retour : la sélection est repartie de zéro, aucune case cochée.
+    await user.click(editModeToggle())
+    expect(screen.getByText('0 elements selected')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Select octocat' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Select defunkt' })).not.toBeChecked()
+    expect(selectAllCheckbox()).not.toBeChecked()
+  })
+
+  it('conserve la liste travaillée à travers un aller-retour', async () => {
+    const user = await searchTwoUsers()
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select octocat' }))
+    await user.click(duplicateButton())
+    expect(screen.getAllByText('octocat')).toHaveLength(2)
+
+    await user.click(editModeToggle())
+    await user.click(editModeToggle())
+
+    // Seule la sélection est remise à zéro : les duplications survivent.
+    expect(screen.getAllByText('octocat')).toHaveLength(2)
+    expect(screen.getByText('0 elements selected')).toBeInTheDocument()
+  })
+
+  it('est activable au clavier', async () => {
+    const user = await searchTwoUsers()
+
+    editModeToggle().focus()
+    expect(editModeToggle()).toHaveFocus()
+
+    // Actif au départ : Entrée coupe le mode édition.
+    await user.keyboard('{Enter}')
+    expect(editModeToggle()).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+
+    // Espace le rétablit : les deux touches natives du <button> fonctionnent.
+    await user.keyboard(' ')
+    expect(editModeToggle()).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('checkbox', { name: 'Select octocat' })).toBeInTheDocument()
+  })
+
+  it('laisse les liserés de duplication visibles hors mode édition', async () => {
+    const user = await searchTwoUsers()
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select octocat' }))
+    await user.click(duplicateButton())
+
+    await user.click(editModeToggle())
+
+    // Le marqueur reflète l'état de la liste, pas le mode d'interaction.
+    for (const card of screen.getAllByText('octocat').map((n) => n.closest('li'))) {
+      expect(card).toHaveAttribute('data-duplicate', 'true')
+    }
+  })
+})
+
+describe('App — thème', () => {
+  it('expose un toggle accessible décrivant l’action à venir', async () => {
+    await searchTwoUsers()
+
+    expect(themeToggle()).toBeInTheDocument()
+    expect(themeToggle()).toHaveAccessibleName('Switch to light theme')
+  })
+
+  it('démarre en sombre quand le système n’exprime pas de préférence claire', () => {
+    render(<App />)
+
+    expect(currentTheme()).toBe('dark')
+  })
+
+  it('bascule data-theme sur <html> à chaque clic', async () => {
+    const user = await searchTwoUsers()
+
+    expect(currentTheme()).toBe('dark')
+
+    await user.click(themeToggle())
+    expect(currentTheme()).toBe('light')
+    // Le libellé décrit toujours l'action suivante, pas l'état courant.
+    expect(themeToggle()).toHaveAccessibleName('Switch to dark theme')
+
+    await user.click(themeToggle())
+    expect(currentTheme()).toBe('dark')
+    expect(themeToggle()).toHaveAccessibleName('Switch to light theme')
+  })
+
+  it('est activable au clavier', async () => {
+    const user = await searchTwoUsers()
+
+    themeToggle().focus()
+    expect(themeToggle()).toHaveFocus()
+
+    await user.keyboard('{Enter}')
+    expect(currentTheme()).toBe('light')
+
+    await user.keyboard(' ')
+    expect(currentTheme()).toBe('dark')
+  })
+
+  it('suit la préférence système quand elle est au clair', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === '(prefers-color-scheme: light)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }))
+
+    render(<App />)
+
+    expect(currentTheme()).toBe('light')
   })
 })
 

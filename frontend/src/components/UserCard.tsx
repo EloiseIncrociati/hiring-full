@@ -8,10 +8,18 @@ type UserCardProps = {
   readonly selected: boolean
   /** Calculé par le hook à partir de la liste courante, jamais stocké sur l'item. */
   readonly duplicated: boolean
+  /** Hors mode édition, la checkbox n'est pas montée du tout. */
+  readonly selectable: boolean
   readonly onToggle: (instanceId: string) => void
 }
 
-export function UserCard({ item, selected, duplicated, onToggle }: UserCardProps) {
+export function UserCard({
+  item,
+  selected,
+  duplicated,
+  selectable,
+  onToggle,
+}: UserCardProps) {
   const checkboxId = useId()
   const { user } = item
 
@@ -24,14 +32,16 @@ export function UserCard({ item, selected, duplicated, onToggle }: UserCardProps
       data-selected={selected ? 'true' : undefined}
       data-duplicate={duplicated ? 'true' : undefined}
     >
-      <input
-        id={checkboxId}
-        type="checkbox"
-        className={`${controls.checkbox} ${styles.cardCheckbox}`}
-        checked={selected}
-        onChange={() => onToggle(item.instanceId)}
-        aria-label={`Select ${user.login}`}
-      />
+      {selectable && (
+        <input
+          id={checkboxId}
+          type="checkbox"
+          className={`${controls.checkbox} ${styles.cardCheckbox}`}
+          checked={selected}
+          onChange={() => onToggle(item.instanceId)}
+          aria-label={`Select ${user.login}`}
+        />
+      )}
 
       {/* alt vide : le login est juste en dessous, l'annoncer deux fois est du bruit. */}
       <img className={styles.avatar} src={user.avatar_url} alt="" loading="lazy" />

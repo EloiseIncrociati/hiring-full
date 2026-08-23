@@ -12,6 +12,8 @@ export type SelectableList = {
   readonly isDuplicated: (userId: number) => boolean
   readonly toggleItem: (instanceId: string) => void
   readonly toggleAll: () => void
+  /** Désélection globale, sans toucher à la liste. */
+  readonly clearSelection: () => void
   readonly duplicateSelected: () => void
   readonly deleteSelected: () => void
 }
@@ -132,6 +134,10 @@ export function useSelectableList(users: readonly GithubUser[]): SelectableList 
     })
   }, [items])
 
+  const clearSelection = useCallback(() => {
+    setSelectedIds(EMPTY_SELECTION)
+  }, [])
+
   const duplicateSelected = useCallback(() => {
     setItems((current) =>
       current.flatMap((item) =>
@@ -160,6 +166,7 @@ export function useSelectableList(users: readonly GithubUser[]): SelectableList 
     isDuplicated,
     toggleItem,
     toggleAll,
+    clearSelection,
     duplicateSelected,
     deleteSelected,
   }
