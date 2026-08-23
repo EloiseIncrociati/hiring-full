@@ -1,0 +1,124 @@
+/* ---------------------------------------------------------------
+   Design tokens — source de vérité unique du thème.
+   Les composants ne référencent jamais un hex en dur : uniquement var(--…).
+   --------------------------------------------------------------- */
+:root {
+  /* Fonds, du plus profond au plus élevé */
+  --bg: #0b0e13;
+  --surface: #0f131a;
+  --surface-2: #141a24;
+  --surface-3: #161c26;
+
+  /* Bordures, par intensité croissante */
+  --border: #232c39;
+  --border-2: #262f3d;
+  --border-3: #2f3a4d;
+
+  /* Texte, du plus contrasté au plus discret */
+  --text: #f2f5fa;
+  --text-2: #aeb6c6;
+  --text-3: #7c8698;
+
+  /* Accent */
+  --accent: #3b82f6;
+  --accent-2: #2f7cf6;
+  --accent-3: #4d92ff;
+
+  /* Typographie — polices chargées via <link> dans index.html */
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------------
+   Reset minimal
+   --------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+}
+
+#root {
+  min-height: 100%;
+}
+
+/* ---------------------------------------------------------------
+   Mise en page provisoire — sobre, le design des cartes viendra après.
+   Aucune valeur brute : uniquement des tokens.
+   --------------------------------------------------------------- */
+.app {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.search-bar label {
+  color: var(--text-2);
+  font-size: 0.875rem;
+}
+
+.search-bar input {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.search-bar input::placeholder {
+  color: var(--text-3);
+}
+
+.search-bar input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+.results {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.results li {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--surface-2);
+  font-family: var(--font-mono);
+}
