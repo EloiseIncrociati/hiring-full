@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import styles from './SearchBar.module.css'
 
 type SearchBarProps = {
   readonly value: string
@@ -11,11 +12,14 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
   const inputId = useId()
 
   return (
-    <div className="search-bar">
-      <label htmlFor={inputId}>Search GitHub users</label>
+    <div className={styles.wrapper}>
+      <label htmlFor={inputId} className={styles.label}>
+        Search GitHub users
+      </label>
       <input
         id={inputId}
         type="search"
+        className={styles.input}
         value={value}
         placeholder="Search users"
         autoComplete="off"

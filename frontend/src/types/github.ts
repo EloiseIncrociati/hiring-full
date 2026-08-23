@@ -14,3 +14,15 @@ export type GithubUser = {
 export type GithubSearchResponse = {
   readonly items: readonly GithubUser[]
 }
+
+/**
+ * Une *occurrence* d'utilisateur dans la liste affichée.
+ *
+ * La duplication autorise plusieurs occurrences du même compte GitHub : `user.id`
+ * n'identifie donc plus une ligne de la liste. `instanceId` est généré côté client
+ * et reste l'identité stable d'une occurrence — key React et clé de sélection.
+ */
+export type SearchResultItem = {
+  readonly instanceId: string
+  readonly user: GithubUser
+}

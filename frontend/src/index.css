@@ -24,6 +24,16 @@
   --accent-2: #2f7cf6;
   --accent-3: #4d92ff;
 
+  /* Accents sémantiques — une couleur par intention, désaturées pour le fond sombre.
+     Trois couleurs au total : bleu = sélection, jaune = duplication, rouge = suppression. */
+  --duplicate: #c9a24d;
+  --danger: #c25f5f;
+
+  /* Tokens dérivés, jamais de nouvelles couleurs : restent synchronisés avec --accent.
+     Deux paliers d'opacité pour composer un halo dégradé (proche / diffus). */
+  --accent-glow: color-mix(in srgb, var(--accent) 30%, transparent);
+  --accent-glow-soft: color-mix(in srgb, var(--accent) 14%, transparent);
+
   /* Typographie — polices chargées via <link> dans index.html */
   --font-sans: 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -64,61 +74,4 @@ samp {
 
 #root {
   min-height: 100%;
-}
-
-/* ---------------------------------------------------------------
-   Mise en page provisoire — sobre, le design des cartes viendra après.
-   Aucune valeur brute : uniquement des tokens.
-   --------------------------------------------------------------- */
-.app {
-  max-width: 42rem;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
-.search-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.search-bar label {
-  color: var(--text-2);
-  font-size: 0.875rem;
-}
-
-.search-bar input {
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  background-color: var(--surface);
-  color: var(--text);
-  font: inherit;
-}
-
-.search-bar input::placeholder {
-  color: var(--text-3);
-}
-
-.search-bar input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-color: var(--accent);
-}
-
-.results {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.results li {
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  background-color: var(--surface-2);
-  font-family: var(--font-mono);
 }

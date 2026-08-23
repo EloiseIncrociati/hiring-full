@@ -1,0 +1,121 @@
+/* Contrôles partagés entre la barre d'actions et les cartes. */
+
+/* Vraie <input type="checkbox"> : `appearance: none` retire le rendu natif mais
+   conserve la sémantique, le focus clavier et l'état `indeterminate`. */
+.checkbox {
+  appearance: none;
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  border: 1px solid var(--border-3);
+  border-radius: 0.3rem;
+  background-color: var(--surface-3);
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.checkbox::after {
+  content: '';
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--text);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.checkbox:checked,
+.checkbox:indeterminate {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkbox:checked::after {
+  transform: scale(1);
+}
+
+/* État intermédiaire : un tiret, pas une coche. */
+.checkbox:indeterminate::after {
+  width: 0.5rem;
+  height: 2px;
+  border-radius: 1px;
+  clip-path: none;
+  transform: scale(1);
+}
+
+.checkbox:hover:not(:checked):not(:indeterminate) {
+  border-color: var(--accent-3);
+}
+
+.checkbox:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+/* Bouton icône — le libellé accessible passe par aria-label.
+   `--action-color` est le point d'extension : chaque bouton la redéfinit pour
+   porter sa propre sémantique. Sans surcharge, le bouton reste neutre. */
+.iconButton {
+  --action-color: var(--text-2);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border-2);
+  border-radius: 0.5rem;
+  background-color: var(--surface-2);
+  color: var(--action-color);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Au repos la couleur reste discrète ; au survol, bordure et fond la reprennent
+   en très faible dosage. La teinte s'affirme sans devenir criarde. */
+.iconButton:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--action-color) 12%, var(--surface-3));
+  border-color: color-mix(in srgb, var(--action-color) 50%, var(--border-2));
+  transform: translateY(-1px);
+}
+
+.iconButton:active:not(:disabled) {
+  transform: none;
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+/* `disabled` bloque déjà l'interaction : le style ne fait que la rendre lisible. */
+.iconButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconButton svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkbox,
+  .checkbox::after,
+  .iconButton {
+    transition: none;
+  }
+
+  .iconButton:hover:not(:disabled) {
+    transform: none;
+  }
+}

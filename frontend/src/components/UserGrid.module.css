@@ -1,0 +1,28 @@
+/* Zone scrollable : la grille défile, l'en-tête et la barre d'actions restent en place.
+   `min-height: 0` est indispensable pour qu'un enfant flex puisse rétrécir et scroller. */
+.scroller {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+/* auto-fill + minmax : le nombre de colonnes s'adapte à la largeur disponible,
+   sans media query. Une seule colonne sous ~200px de large. */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.875rem;
+}
+
+.scroller::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+  background-color: var(--border-3);
+  border-radius: 1rem;
+}
