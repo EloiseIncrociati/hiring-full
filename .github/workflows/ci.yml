@@ -27,8 +27,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # 20.19 et non 20 : vite et oxlint exigent ^20.19.0 || >=22.12.0.
-          node-version: '20.19'
+          # Version lue depuis .nvmrc : une seule source de vérité, partagée avec
+          # l'environnement local. Node 22 est requis par undici/jsdom (markAsUncloneable).
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: algo/package-lock.json
 
@@ -55,7 +56,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.19'
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
