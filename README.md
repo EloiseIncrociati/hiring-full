@@ -1,9 +1,14 @@
 # Tests techniques : Candidature Full
 
+[![CI](https://github.com/EloiseIncrociati/hiring-full/actions/workflows/ci.yml/badge.svg)](https://github.com/EloiseIncrociati/hiring-full/actions/workflows/ci.yml)
+
 Ce dépôt regroupe les deux exercices techniques. **Chaque dossier est un projet
 autonome**, avec son propre `package.json`, ses dépendances et ses commandes : il n'y a
 ni workspace ni outillage partagé à la racine. On installe et on lance chaque exercice
 depuis son dossier.
+
+Une CI GitHub Actions vérifie les deux projets à chaque push et pull request sur `main` :
+typage et tests pour `algo/`, lint, build et tests pour `frontend/`.
 
 ## Les deux exercices
 

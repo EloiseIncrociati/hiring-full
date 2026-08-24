@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+# Lecture seule : le workflow ne fait que vérifier, il n'écrit rien dans le dépôt.
+permissions:
+  contents: read
+
+# Une nouvelle poussée sur la même branche annule l'exécution précédente encore en cours.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  algo:
+    name: algo (FizzBuzz)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: algo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 20.19 et non 20 : vite et oxlint exigent ^20.19.0 || >=22.12.0.
+          node-version: '20.19'
+          cache: npm
+          cache-dependency-path: algo/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # vitest transpile sans vérifier les types : sans cette étape, algo n'aurait
+      # aucun contrôle de typage en CI (le frontend l'obtient via `tsc -b` du build).
+      - name: Type check
+        run: npm run typecheck
+
+      # `test` vaut déjà `vitest run` : une passe unique, pas de mode watch.
+      - name: Tests
+        run: npm test
+
+  frontend:
+    name: frontend (GitHub User Search)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # `build` = `tsc -b && vite build` : vérifie les types puis produit le bundle.
+      - name: Build
+        run: npm run build
+
+      # `test:run` et non `test` : ce dernier lance vitest en mode watch et ne
+      # rendrait jamais la main.
+      - name: Tests
+        run: npm run test:run
