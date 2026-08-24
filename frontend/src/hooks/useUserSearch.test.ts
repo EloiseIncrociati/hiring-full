@@ -15,7 +15,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-/** Fait avancer le temps simulé ET vide la file de microtâches (promesses). */
+// Advance timers and flush pending promises.
 async function advance(ms: number): Promise<void> {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(ms)
@@ -47,14 +47,13 @@ describe('useUserSearch', () => {
       rerender({ query })
     }
 
-    // Juste avant l'échéance : le timer de la dernière frappe n'a pas encore expiré.
     await advance(DEBOUNCE_MS - 1)
     expect(fetchMock).not.toHaveBeenCalled()
 
     await advance(1)
     expect(fetchMock).toHaveBeenCalledTimes(1)
 
-    // Et c'est bien la dernière valeur saisie qui part, pas une intermédiaire.
+    // last value entered 
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain('q=octo')
   })
 
@@ -74,7 +73,7 @@ describe('useUserSearch', () => {
   })
 
   it('passe le signal à fetch et abandonne la requête en vol à la frappe suivante', async () => {
-    // Promesse jamais résolue : la requête reste « en vol » pour toute la durée du test.
+    // Keep the request pending throughout the test.
     fetchMock.mockReturnValue(new Promise<Response>(() => {}))
 
     const { rerender } = renderSearch('octo')
@@ -121,7 +120,7 @@ describe('useUserSearch', () => {
     await advance(DEBOUNCE_MS)
     expect(result.current.status).toBe('loading')
 
-    // Annule la première requête ; son rejet ne doit pas remonter comme une panne.
+    // Cancels the first request
     rerender({ query: 'octoc' })
     await advance(DEBOUNCE_MS)
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { fizzBuzz, type Rule } from "./fizzbuzz.js";
 
 describe("fizzBuzz", () => {
+  // default rules
   it("renvoie 'Fizz' pour un multiple de 3", () => {
     expect(fizzBuzz(3)).toBe("Fizz");
     expect(fizzBuzz(9)).toBe("Fizz");

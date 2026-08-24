@@ -97,7 +97,7 @@ describe('useSelectableList', () => {
     expect(result.current.isSelected(result.current.items[1]!.instanceId)).toBe(false)
     expect(result.current.selectedCount).toBe(1)
 
-    // Donc dupliquer deux fois est linéaire (2 → 3 → 4), pas exponentiel.
+    // duplicating twice is linear, not exponential.
     act(() => result.current.duplicateSelected())
     expect(result.current.items).toHaveLength(4)
   })
@@ -116,9 +116,8 @@ describe('useSelectableList', () => {
     act(() => result.current.toggleItem(result.current.items[0]!.instanceId))
     act(() => result.current.duplicateSelected())
 
-    // Original et copie sont indissociables : les deux portent le marqueur.
+    // The original and the copy both bear the marker.
     expect(result.current.isDuplicated(OCTOCAT.id)).toBe(true)
-    // Le compte resté unique n'est pas concerné.
     expect(result.current.isDuplicated(DEFUNKT.id)).toBe(false)
   })
 
@@ -132,7 +131,7 @@ describe('useSelectableList', () => {
     expect(result.current.items).toHaveLength(3)
     expect(result.current.isDuplicated(OCTOCAT.id)).toBe(true)
 
-    // On supprime deux des trois occurrences : il n'en reste qu'une.
+    // We delete two of the three occurrences
     act(() => result.current.toggleItem(result.current.items[1]!.instanceId))
     act(() => result.current.deleteSelected())
 
@@ -174,7 +173,7 @@ describe('useSelectableList', () => {
     expect(result.current.items).toHaveLength(4)
     expect(result.current.selectedCount).toBe(2)
 
-    // Nouvelle réponse de l'API : on repart d'une liste fraîche.
+    // New API response
     rerender({ source: [MOJOMBO] })
 
     expect(result.current.items).toHaveLength(1)

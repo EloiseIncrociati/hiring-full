@@ -1,14 +1,14 @@
 import { useId } from 'react'
 import type { SearchResultItem } from '../types/github'
 import controls from '../styles/controls.module.css'
-import styles from './UserCard.module.css'
+import styles from '../styles/UserCard.module.css'
 
 type UserCardProps = {
   readonly item: SearchResultItem
   readonly selected: boolean
-  /** Calculé par le hook à partir de la liste courante, jamais stocké sur l'item. */
+  // Derived from the current list.
   readonly duplicated: boolean
-  /** Hors mode édition, la checkbox n'est pas montée du tout. */
+  // Checkbox is only mounted in edit mode.
   readonly selectable: boolean
   readonly onToggle: (instanceId: string) => void
 }
@@ -24,9 +24,6 @@ export function UserCard({
   const { user } = item
 
   return (
-    // Les deux états pilotent le style via des attributs de données plutôt que des
-    // classes conditionnelles : ils se composent sans s'écraser, et restent lisibles
-    // dans l'inspecteur comme dans les tests.
     <li
       className={styles.card}
       data-selected={selected ? 'true' : undefined}
@@ -43,7 +40,6 @@ export function UserCard({
         />
       )}
 
-      {/* alt vide : le login est juste en dessous, l'annoncer deux fois est du bruit. */}
       <img className={styles.avatar} src={user.avatar_url} alt="" loading="lazy" />
 
       <p className={styles.login}>{user.login}</p>

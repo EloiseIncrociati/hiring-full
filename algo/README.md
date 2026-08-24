@@ -31,7 +31,7 @@ npm run typecheck  # vérifie les types sans émettre de JS
 
 `fizzBuzz(n)` attend un **entier supérieur ou égal à 1**.
 
-Les entrées hors périmètre — `NaN`, `Infinity`, décimaux, négatifs — ne sont
+Les entrées hors périmètre `NaN`, `Infinity`, décimaux, négatifs ne sont
 volontairement **pas** gérées : le sujet cadre le problème de 1 à N, et aucun appelant du
 projet ne produit ces valeurs. Ajouter une validation défensive coûterait du code et des
 tests pour un cas qui n'existe pas ici. Le contrat est documenté plutôt que défendu à
@@ -40,6 +40,10 @@ l'exécution.
 Si ce code devait devenir une brique publique consommée par du code tiers, le compromis
 s'inverserait : la validation deviendrait nécessaire, puisque le contrat ne serait plus
 garanti par l'appelant.
+Solution : valider n au début de la fonction : 
+if (!Number.isInteger(n) || n < 1 || !Number.isFinite(n)) {
+    throw new Error("n must be a positive integer");
+}
 
 ## Règles injectables
 
@@ -60,7 +64,7 @@ L'ordre du tableau détermine l'ordre de concaténation.
 
 TypeScript est un **surensemble de JavaScript** : tout JS valide est du TS valide. Il
 ajoute un typage statique vérifié à la compilation, puis il est **transpilé en JS**
-standard — il ne s'exécute pas tel quel, et n'apporte aucune dépendance à l'exécution.
+standard, il ne s'exécute pas tel quel, et n'apporte aucune dépendance à l'exécution.
 
 Le choix est ici motivé par la cohérence avec la stack du poste. Sur ce fichier précis, le
 typage documente le contrat (`Rule`, `readonly`) et le rend vérifiable : passer un tableau
@@ -72,9 +76,26 @@ Le projet est en mode `strict`, sans aucun `any`.
 
 | Fichier                | Rôle                                             |
 | ---------------------- | ------------------------------------------------ |
-| `src/fizzbuzz.ts`      | La logique pure — aucune I/O, donc testable       |
-| `src/fizzbuzz.test.ts` | Les tests Vitest                                  |
-| `src/index.ts`         | Le point d'entrée — la boucle et l'affichage      |
+| `src/fizzbuzz.ts`      | La logique pure, aucune I/O, donc testable       |
+| `src/fizzbuzz.test.ts` | Les 6 tests Vitest                                |
+| `src/index.ts`         | Le point d'entrée, la boucle et l'affichage      |
 
 L'affichage est séparé de la logique : `fizzBuzz` retourne une chaîne et ne connaît pas
 `console`. C'est ce qui permet de la tester sans capturer la sortie standard.
+
+## Tests
+
+6 tests couvrent les classes d'équivalence du problème : multiple de 3, multiple de 5,
+multiple des deux, aucune correspondance, plus deux tests sur les règles injectées, dont
+un qui vérifie que l'ordre du tableau détermine l'ordre de concaténation.
+
+```bash
+npm test
+```
+
+## Développement assisté par IA
+
+Cet exercice a été développé avec l'assistance de Claude Code dans VSCodium, selon la même
+méthode que l'exercice frontend : spécification écrite, génération, puis relecture et
+vérification par l'autrice. Le détail figure dans le
+[README frontend](../frontend/README.md#développement-assisté-par-ia).

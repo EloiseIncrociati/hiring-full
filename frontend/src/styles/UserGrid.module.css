@@ -1,27 +1,21 @@
-/* Zone scrollable : la grille défile, l'en-tête et la barre d'actions restent en place.
-   `min-height: 0` est indispensable pour qu'un enfant flex puisse rétrécir et scroller. */
+/* Scroll container */
 .scroller {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
 
-  /* Un conteneur `overflow: auto` découpe tout ce qui dépasse de sa boîte de padding.
-     Sans marge intérieure, l'ombre et le halo des cartes de bordure sont coupés net.
-     Le padding leur réserve la place de s'estomper — plus bas, car le halo est décalé
-     vers le bas (0 10px 44px) et la dernière rangée doit respirer. */
+  /* Extra space keeps card shadows from being clipped. */
   padding: 0.75rem 0.75rem 1.75rem;
 
-  /* Gouttière réservée des DEUX côtés : la grille ne se décale plus à l'apparition
-     de la scrollbar, et celle-ci ne recouvre jamais la dernière colonne. */
+  /* Keep the grid stable when the scrollbar appears. */
   scrollbar-gutter: stable both-edges;
 
-  /* Scrollbar fine et tokenisée : suit automatiquement le thème clair/sombre. */
+  /* Theme-aware scrollbar. */
   scrollbar-width: thin;
   scrollbar-color: var(--border-3) transparent;
 }
 
-/* auto-fill + minmax : le nombre de colonnes s'adapte à la largeur disponible,
-   sans media query. Une seule colonne sous ~200px de large. */
+/* Responsive grid */
 .grid {
   list-style: none;
   margin: 0;
@@ -31,7 +25,7 @@
   gap: 0.875rem;
 }
 
-/* Repli pour les moteurs WebKit antérieurs à la prise en charge de `scrollbar-width`. */
+/* WebKit fallback */
 .scroller::-webkit-scrollbar {
   width: 0.5rem;
 }

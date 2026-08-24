@@ -1,5 +1,5 @@
 import type { Theme } from '../hooks/useTheme'
-import styles from './ThemeToggle.module.css'
+import styles from '../styles/ThemeToggle.module.css'
 
 type ThemeToggleProps = {
   readonly theme: Theme
@@ -26,10 +26,7 @@ function MoonIcon() {
   )
 }
 
-/**
- * Bouton icône : le libellé accessible décrit l'ACTION, pas l'état courant
- * (« Switch to light theme »), ce qui lève l'ambiguïté d'une icône seule.
- */
+// Icon button with an accessible action label.
 export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
   const isDark = theme === 'dark'
 

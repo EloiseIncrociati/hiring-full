@@ -95,7 +95,7 @@ async function confirmDelete(user: UserEvent) {
   await user.click(confirmDeleteButton())
 }
 
-describe('App — recherche', () => {
+describe('App : recherche', () => {
   it("affiche le titre de l'application", () => {
     render(<App />)
 
@@ -151,7 +151,7 @@ describe('App — recherche', () => {
   })
 })
 
-describe('App — carte utilisateur', () => {
+describe('App : carte utilisateur', () => {
   it("affiche l'avatar, l'id et un lien vers le profil ouvert dans un nouvel onglet", async () => {
     await searchTwoUsers()
 
@@ -173,7 +173,7 @@ describe('App — carte utilisateur', () => {
   })
 })
 
-describe('App — mode édition', () => {
+describe('App : mode édition', () => {
   it('est activé au chargement : tous les contrôles sont présents', async () => {
     await searchTwoUsers()
 
@@ -193,8 +193,7 @@ describe('App — mode édition', () => {
     await user.click(editModeToggle())
     expect(editModeToggle()).toHaveAttribute('aria-pressed', 'false')
 
-    // Les contrôles ne sont pas dans le DOM, donc hors tabulation et hors
-    // arbre d'accessibilité — pas seulement invisibles.
+    // Les contrôles ne sont pas dans le DOM
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
     expect(
       screen.queryByRole('button', { name: /duplicate selected users/i }),
@@ -286,7 +285,7 @@ describe('App — mode édition', () => {
   })
 })
 
-describe('App — thème', () => {
+describe('App : thème', () => {
   it('expose un toggle accessible décrivant l’action à venir', async () => {
     await searchTwoUsers()
 
@@ -346,7 +345,7 @@ describe('App — thème', () => {
   })
 })
 
-describe('App — sélection et actions', () => {
+describe('App : sélection et actions', () => {
   it('met à jour le compteur au fil de la sélection', async () => {
     const user = await searchTwoUsers()
 
@@ -467,7 +466,7 @@ describe('App — sélection et actions', () => {
   })
 })
 
-describe('App — état vide', () => {
+describe('App : état vide', () => {
   it('distingue « tout supprimé » de « aucun résultat »', async () => {
     const user = await searchTwoUsers()
 
@@ -501,7 +500,7 @@ describe('App — état vide', () => {
   })
 })
 
-describe('App — confirmation de suppression', () => {
+describe('App : confirmation de suppression', () => {
   /** Sélectionne octocat et arme la confirmation. */
   async function armDelete(): Promise<UserEvent> {
     const user = await searchTwoUsers()
@@ -617,7 +616,7 @@ describe('App — confirmation de suppression', () => {
   })
 })
 
-describe('App — marqueur de duplication', () => {
+describe('App : marqueur de duplication', () => {
   /** Toutes les cartes portant ce login, dans l'ordre de la grille. */
   function cardsOf(login: string) {
     return screen.getAllByText(login).map((node) => node.closest('li'))

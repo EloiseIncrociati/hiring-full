@@ -3,16 +3,15 @@ import type { GithubUser, SearchResultItem } from '../types/github'
 
 export type SelectionState = 'none' | 'partial' | 'all'
 
+// Public API for the working list.
 export type SelectableList = {
   readonly items: readonly SearchResultItem[]
   readonly selectedCount: number
   readonly selectionState: SelectionState
   readonly isSelected: (instanceId: string) => boolean
-  /** Vrai si ce compte apparaît au moins deux fois dans la liste affichée. */
   readonly isDuplicated: (userId: number) => boolean
   readonly toggleItem: (instanceId: string) => void
   readonly toggleAll: () => void
-  /** Désélection globale, sans toucher à la liste. */
   readonly clearSelection: () => void
   readonly duplicateSelected: () => void
   readonly deleteSelected: () => void
@@ -22,10 +21,7 @@ const EMPTY_SELECTION: ReadonlySet<string> = new Set()
 
 let fallbackCounter = 0
 
-/**
- * `crypto.randomUUID` n'existe qu'en contexte sécurisé (https ou localhost).
- * Le repli garantit des identifiants uniques partout — y compris en http sur IP locale.
- */
+// Generate a unique instance ID across supported environments.
 function createInstanceId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID()
@@ -39,12 +35,7 @@ function toItems(users: readonly GithubUser[]): readonly SearchResultItem[] {
   return users.map((user) => ({ instanceId: createInstanceId(), user }))
 }
 
-/**
- * Comptes présents plus d'une fois dans la liste courante.
- *
- * « Être un doublon » n'est pas une propriété de l'item mais une relation entre
- * items : elle se recalcule à chaque modification de la liste, jamais ne se stocke.
- */
+// Find accounts occurring more than once in the current list.
 function findDuplicatedUserIds(
   items: readonly SearchResultItem[],
 ): ReadonlySet<number> {
@@ -66,25 +57,27 @@ function findDuplicatedUserIds(
 }
 
 /**
- * Liste « travaillée » par l'utilisateur : sélection, duplication, suppression.
+ * The list as reworked by the user: selection, duplication, deletion.
  *
- * Les résultats de l'API restent la source ; toute nouvelle réponse repart d'une
- * liste fraîche, sans conserver les modifications précédentes (actions front-only).
+ * API results stay the single source of truth. Any new response restarts from a
+ * fresh list, discarding previous edits these actions are front-end only.
+ *
+ * @param users Latest successful API results. Identity of this array is the reset
+ *              trigger, so callers must pass a stable reference when nothing changed.
  */
 export function useSelectableList(users: readonly GithubUser[]): SelectableList {
   const [items, setItems] = useState<readonly SearchResultItem[]>(() => toItems(users))
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(EMPTY_SELECTION)
   const [sourceUsers, setSourceUsers] = useState(users)
 
-  // Ajustement d'état pendant le rendu (pattern React « adjusting state when a prop
-  // changes ») : React relance le rendu immédiatement, sans commit ni rendu en
-  // cascade. Un useEffect provoquerait un flash de l'ancienne liste à l'écran.
+  // Reset local changes when new API results arrive.
   if (sourceUsers !== users) {
     setSourceUsers(users)
     setItems(toItems(users))
     setSelectedIds(EMPTY_SELECTION)
   }
 
+  // Counted as an intersection 
   const selectedCount = useMemo(
     () =>
       items.reduce(
@@ -102,7 +95,6 @@ export function useSelectableList(users: readonly GithubUser[]): SelectableList 
     [selectedIds],
   )
 
-  // Recalculé uniquement quand la liste change — pas à chaque clic de sélection.
   const duplicatedUserIds = useMemo(() => findDuplicatedUserIds(items), [items])
 
   const isDuplicated = useCallback(
@@ -114,7 +106,6 @@ export function useSelectableList(users: readonly GithubUser[]): SelectableList 
     setSelectedIds((current) => {
       const next = new Set(current)
 
-      // `delete` renvoie false si l'élément était absent : un seul aller-retour.
       if (!next.delete(instanceId)) {
         next.add(instanceId)
       }
@@ -142,15 +133,12 @@ export function useSelectableList(users: readonly GithubUser[]): SelectableList 
     setItems((current) =>
       current.flatMap((item) =>
         selectedIds.has(item.instanceId)
-          ? // La copie est insérée juste après son original : le lien reste visible
-            // sans avoir à scroller jusqu'en bas de la grille.
+          ? // Keep copies next to their original with a distinct instanceId.
             [item, { instanceId: createInstanceId(), user: item.user }]
           : [item],
       ),
     )
-    // La sélection est conservée sur les originaux : l'action ne modifie pas
-    // l'intention de l'utilisateur, et dupliquer deux fois ajoute n puis n copies
-    // (linéaire) au lieu de doubler à chaque clic (exponentiel).
+    // Selection deliberately stays on the originals
   }, [selectedIds])
 
   const deleteSelected = useCallback(() => {

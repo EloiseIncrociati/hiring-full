@@ -1,15 +1,11 @@
-import styles from './EditModeToggle.module.css'
+import styles from '../styles/EditModeToggle.module.css'
 
 type EditModeToggleProps = {
   readonly enabled: boolean
   readonly onToggle: () => void
 }
 
-/**
- * Vrai <button> avec `aria-pressed` : l'état enfoncé est porté par l'arbre
- * d'accessibilité, et Entrée/Espace fonctionnent sans aucun code clavier.
- * La piste et la pastille sont purement décoratives, d'où l'aria-hidden.
- */
+// Accessible toggle using aria-pressed.
 export function EditModeToggle({ enabled, onToggle }: EditModeToggleProps) {
   return (
     <button

@@ -53,8 +53,7 @@
     background-color 0.2s ease;
 }
 
-/* État enfoncé : piloté par aria-pressed, donc le style ne peut pas diverger
-   de ce que lit un lecteur d'écran. */
+/* Pressed state */
 .toggle[aria-pressed='true'] {
   color: var(--text);
   border-color: color-mix(in srgb, var(--accent) 45%, var(--border-2));

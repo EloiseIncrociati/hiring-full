@@ -29,8 +29,7 @@
   gap: 0.5rem;
 }
 
-/* Chaque action porte sa couleur sémantique. `--duplicate` est le même token que
-   le liseré des cartes dupliquées : l'action et son résultat parlent d'une seule voix. */
+/* Semantic action colors */
 .duplicateAction {
   --action-color: var(--duplicate);
 }
@@ -39,8 +38,7 @@
   --action-color: var(--danger);
 }
 
-/* Confirmation armée : le rouge s'affirme et le bouton s'élargit pour accueillir
-   le libellé. Transition de couleur seulement, aucun clignotement. */
+/* Delete confirmation */
 .deleteConfirming,
 .deleteConfirming:hover:not(:disabled) {
   width: auto;
@@ -62,7 +60,7 @@
   white-space: nowrap;
 }
 
-/* Visible pour les lecteurs d'écran uniquement. */
+/* Screen reader only */
 .srOnly {
   position: absolute;
   width: 1px;

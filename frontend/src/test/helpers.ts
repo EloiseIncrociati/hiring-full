@@ -16,7 +16,7 @@ export function jsonResponse(payload: unknown): Response {
   })
 }
 
-/** 403 + quota à zéro : la seule combinaison qui signifie « rate limit ». */
+/** 403 plus a zeroed quota: the only combination that means "rate limit". */
 export function rateLimitResponse(): Response {
   return new Response(JSON.stringify({ message: 'API rate limit exceeded' }), {
     status: 403,
@@ -24,7 +24,7 @@ export function rateLimitResponse(): Response {
   })
 }
 
-/** 403 sans quota épuisé : doit rester une erreur générique, pas un rate limit. */
+/** 403 without an exhausted quota: must stay a generic error, not a rate limit. */
 export function forbiddenResponse(): Response {
   return new Response(JSON.stringify({ message: 'Forbidden' }), {
     status: 403,

@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { SelectionState } from '../hooks/useSelectableList'
 import controls from '../styles/controls.module.css'
-import styles from './ActionBar.module.css'
+import styles from '../styles/ActionBar.module.css'
 
-/** Délai après lequel une confirmation non suivie d'un second clic expire. */
+// Delete confirmation timeout.
 export const CONFIRM_TIMEOUT_MS = 3000
 
 type ActionBarProps = {
@@ -42,21 +42,17 @@ export function ActionBar({
   const checkboxId = useId()
   const checkboxRef = useRef<HTMLInputElement>(null)
 
-  // État purement visuel : « ce bouton attend une seconde activation ». Il ne décrit
-  // pas la liste, seulement l'étape d'interaction en cours — donc il vit ici.
+  // Local confirmation state.
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [confirmedSelection, setConfirmedSelection] = useState(selectedCount)
 
-  // Toute variation de la sélection invalide la confirmation : l'utilisateur ne
-  // confirmerait plus le même ensemble. Une nouvelle recherche remet la sélection
-  // à zéro, donc ce seul test couvre aussi ce cas.
+  // Reset confirmation when the selection changes.
   if (confirmedSelection !== selectedCount) {
     setConfirmedSelection(selectedCount)
     setIsConfirmingDelete(false)
   }
 
-  // `indeterminate` est une propriété du DOM sans attribut HTML équivalent :
-  // React ne peut pas la rendre, elle doit être posée impérativement.
+  // Sync the native indeterminate state.
   useEffect(() => {
     const checkbox = checkboxRef.current
 
@@ -65,7 +61,7 @@ export function ActionBar({
     }
   }, [selectionState])
 
-  // Expiration : sans seconde activation, l'intention est considérée abandonnée.
+  // Cancel confirmation after the timeout.
   useEffect(() => {
     if (!isConfirmingDelete) {
       return
@@ -79,13 +75,11 @@ export function ActionBar({
   const hasSelection = selectedCount > 0
 
   function handleDeleteClick() {
-    // Premier clic : on arme, on ne supprime pas.
     if (!isConfirmingDelete) {
       setIsConfirmingDelete(true)
       return
     }
 
-    // Second clic : la logique métier est déclenchée telle quelle, inchangée.
     setIsConfirmingDelete(false)
     onDelete()
   }
@@ -122,11 +116,10 @@ export function ActionBar({
             isConfirmingDelete ? styles.deleteConfirming : ''
           }`}
           onClick={handleDeleteClick}
-          // Le focus quitte le bouton (clic ailleurs, Tab) : l'intention est abandonnée.
+          // Cancel confirmation when focus leaves the button.
           onBlur={() => setIsConfirmingDelete(false)}
           disabled={!hasSelection}
-          // En confirmation, le texte visible EST le nom accessible : pas d'aria-label
-          // concurrent, donc pas de divergence entre ce qui est lu et ce qui est vu.
+          // Keep the visible confirmation text as the accessible name.
           aria-label={isConfirmingDelete ? undefined : 'Delete selected users'}
         >
           <DeleteIcon />
@@ -136,8 +129,7 @@ export function ActionBar({
         </button>
       </div>
 
-      {/* Région live : le changement d'intention est annoncé même si le lecteur
-          d'écran ne relit pas de lui-même le nom du bouton focalisé. */}
+      {/* Announce the confirmation state to screen readers. */}
       <span role="status" className={styles.srOnly}>
         {isConfirmingDelete
           ? `Confirmation required to delete ${selectedCount}. Activate the button again.`

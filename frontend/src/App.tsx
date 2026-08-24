@@ -9,29 +9,26 @@ import { useSelectableList } from './hooks/useSelectableList'
 import { useTheme } from './hooks/useTheme'
 import { useUserSearch } from './hooks/useUserSearch'
 import type { GithubUser } from './types/github'
-import styles from './App.module.css'
+import styles from './styles/App.module.css'
 
-// Référence stable : hors succès, `useSelectableList` reçoit toujours le même
-// tableau et ne se réinitialise donc pas à chaque rendu.
+// Stable reference for the empty state.
 const NO_USERS: readonly GithubUser[] = []
 
 export default function App() {
   const [query, setQuery] = useState('')
-  // Mode édition actif dès l'ouverture : sélection, duplication et suppression
-  // sont le cœur de l'exercice, les masquer derrière un clic les rendrait invisibles.
+  // Edit mode is enabled by default.
   const [isEditMode, setIsEditMode] = useState(true)
 
   const { theme, toggleTheme } = useTheme()
   const searchState = useUserSearch(query)
 
-  // Source unique de la liste travaillée : les résultats de l'API.
+  // API results are the source of the working list.  
   const users = searchState.status === 'success' ? searchState.users : NO_USERS
   const list = useSelectableList(users)
 
   function handleToggleEditMode() {
     setIsEditMode((current) => !current)
-    // Entrer comme sortir repart d'une sélection vide : aucune sélection
-    // invisible ne survit hors du mode édition.
+    // Selection only exists in edit mode.
     list.clearSelection()
   }
 

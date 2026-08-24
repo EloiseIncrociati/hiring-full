@@ -1,20 +1,17 @@
-/* ---------------------------------------------------------------
-   Design tokens — source de vérité unique du thème.
-   Les composants ne référencent jamais un hex en dur : uniquement var(--…).
-   --------------------------------------------------------------- */
+/* Design tokens */
 :root {
-  /* Fonds, du plus profond au plus élevé */
+  /* Backgrounds */
   --bg: #0b0e13;
   --surface: #0f131a;
   --surface-2: #141a24;
   --surface-3: #161c26;
 
-  /* Bordures, par intensité croissante */
+  /* Borders */
   --border: #232c39;
   --border-2: #262f3d;
   --border-3: #2f3a4d;
 
-  /* Texte, du plus contrasté au plus discret */
+  /* Text */
   --text: #f2f5fa;
   --text-2: #aeb6c6;
   --text-3: #7c8698;
@@ -24,43 +21,32 @@
   --accent-2: #2f7cf6;
   --accent-3: #4d92ff;
 
-  /* Accents sémantiques — une couleur par intention, désaturées pour le fond sombre.
-     Trois couleurs au total : bleu = sélection, jaune = duplication, rouge = suppression. */
+  /* Semantic colors */
   --duplicate: #c9a24d;
   --danger: #c25f5f;
 
-  /* Tokens dérivés, jamais de nouvelles couleurs : restent synchronisés avec --accent.
-     Deux paliers d'opacité pour composer un halo dégradé (proche / diffus). */
+  /* Selection glow */
   --accent-glow: color-mix(in srgb, var(--accent) 30%, transparent);
   --accent-glow-soft: color-mix(in srgb, var(--accent) 14%, transparent);
 
-  /* Bouton plein d'accent. Volontairement un cran plus profond que --accent :
-     --accent pilote le halo de sélection, le bouton doit s'en détacher. */
-  --btn-primary: #2563eb; /* texte blanc : 5.2:1 */
+  /* Primary button */
+  --btn-primary: #2563eb; /* 5.2:1 */
   --btn-primary-hover: #1d4ed8; /* 6.7:1 */
   --btn-primary-text: #ffffff;
-
-  /* Voile sombre appliqué vers le bas du bouton. Il ne peut qu'ASSOMBRIR :
-     le point le plus clair du dégradé reste donc --btn-primary, dont le
-     contraste est déjà vérifié. Aucun reflet clair — rendu mat. */
   --btn-shade: rgb(0 0 0 / 0.26);
 
-  /* Ombres tokenisées : leur opacité doit chuter sur fond clair. */
+  /* Shadows */
   --shadow: rgb(0 0 0 / 0.25);
   --shadow-strong: rgb(0 0 0 / 0.35);
 
-  /* Typographie — polices chargées via <link> dans index.html */
+  /* Typography */
   --font-sans: 'Manrope', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   color-scheme: dark;
 }
 
-/* ---------------------------------------------------------------
-   Thème clair — exactement les mêmes noms de tokens, d'autres valeurs.
-   Aucun composant n'est modifié : ils consomment déjà var(--…).
-   Contrastes vérifiés WCAG AA sur le texte (≥ 4.5:1).
-   --------------------------------------------------------------- */
+/* Light theme */
 :root[data-theme='light'] {
   --bg: #f5f7fa;
   --surface: #ffffff;
@@ -71,7 +57,7 @@
   --border-2: #d3dae5;
   --border-3: #bcc6d4;
 
-  --text: #0f1720; /* 17:1 sur blanc */
+  --text: #0f1720; /* 17:1 on white */
   --text-2: #4a5568; /* 7.5:1 */
   --text-3: #626c7d; /* 5.3:1 */
 
@@ -79,15 +65,12 @@
   --accent-2: #1d4ed8;
   --accent-3: #1e40af;
 
-  --duplicate: #a16207; /* 4.9:1 — ambre désaturé */
-  --danger: #b91c1c; /* 6.5:1 — rouge brique */
+  --duplicate: #a16207; /* 4.9:1 desaturated amber */
+  --danger: #b91c1c; /* 6.5:1 brick red */
 
-  /* Toujours un cran sous --accent (#2563eb ici) pour rester distinct du halo. */
-  --btn-primary: #1d4ed8; /* texte blanc : 6.7:1 */
+  --btn-primary: #1d4ed8; /* 6.7:1 */
   --btn-primary-hover: #1e40af; /* 8.7:1 */
 
-  /* Halo et ombres nettement plus discrets : sur fond clair, la même opacité
-     produirait des taches sales au lieu d'une lumière. */
   --accent-glow: color-mix(in srgb, var(--accent) 20%, transparent);
   --accent-glow-soft: color-mix(in srgb, var(--accent) 9%, transparent);
   --shadow: rgb(15 23 32 / 0.06);
@@ -96,9 +79,7 @@
   color-scheme: light;
 }
 
-/* ---------------------------------------------------------------
-   Reset minimal
-   --------------------------------------------------------------- */
+/* Reset */
 *,
 *::before,
 *::after {

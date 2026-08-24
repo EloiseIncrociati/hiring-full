@@ -1,7 +1,5 @@
-/* Contrôles partagés entre la barre d'actions et les cartes. */
+/* Controls shared by the action bar and the cards. */
 
-/* Vraie <input type="checkbox"> : `appearance: none` retire le rendu natif mais
-   conserve la sémantique, le focus clavier et l'état `indeterminate`. */
 .checkbox {
   appearance: none;
   flex: none;
@@ -39,7 +37,7 @@
   transform: scale(1);
 }
 
-/* État intermédiaire : un tiret, pas une coche. */
+/* Mixed state, a dash, not a tick. */
 .checkbox:indeterminate::after {
   width: 0.5rem;
   height: 2px;
@@ -57,9 +55,7 @@
   outline-offset: 2px;
 }
 
-/* Bouton icône — le libellé accessible passe par aria-label.
-   `--action-color` est le point d'extension : chaque bouton la redéfinit pour
-   porter sa propre sémantique. Sans surcharge, le bouton reste neutre. */
+/* Icon button */
 .iconButton {
   --action-color: var(--text-2);
 
@@ -68,8 +64,7 @@
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  /* Bordure transparente et non supprimée : la boîte reste identique, et l'état
-     de confirmation peut la révéler en posant simplement `border-color`. */
+  /* Transparent rather than removed */
   border: 1px solid transparent;
   border-radius: 0.5rem;
   background-color: var(--surface-3);
@@ -84,9 +79,7 @@
     transform 0.2s ease;
 }
 
-/* Au repos la couleur reste discrète ; au survol, bordure et fond la reprennent
-   en très faible dosage. La teinte s'affirme sans devenir criarde. */
-/* La couleur n'apparaît qu'au survol : fond légèrement teinté et bordure révélée. */
+/* Colour only asserts itself on hover */
 .iconButton:hover:not(:disabled) {
   background-color: color-mix(in srgb, var(--action-color) 12%, var(--surface-3));
   border-color: color-mix(in srgb, var(--action-color) 50%, var(--border-2));
@@ -103,7 +96,6 @@
   outline-offset: 2px;
 }
 
-/* `disabled` bloque déjà l'interaction : le style ne fait que la rendre lisible. */
 .iconButton:disabled {
   opacity: 0.4;
   cursor: not-allowed;

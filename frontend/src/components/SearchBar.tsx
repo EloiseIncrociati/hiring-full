@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import styles from './SearchBar.module.css'
+import styles from '../styles/SearchBar.module.css'
 
 type SearchBarProps = {
   readonly value: string
@@ -7,8 +7,7 @@ type SearchBarProps = {
 }
 
 export function SearchBar({ value, onChange }: SearchBarProps) {
-  // useId garantit un identifiant unique et stable même si le composant est monté
-  // plusieurs fois : indispensable pour lier <label> et <input> sans collision.
+// Stable unique id for the input.
   const inputId = useId()
 
   return (

@@ -1,6 +1,6 @@
 import type { SearchResultItem } from '../types/github'
 import { UserCard } from './UserCard'
-import styles from './UserGrid.module.css'
+import styles from '../styles/UserGrid.module.css'
 
 type UserGridProps = {
   readonly items: readonly SearchResultItem[]
@@ -21,8 +21,7 @@ export function UserGrid({
     <div className={styles.scroller}>
       <ul className={styles.grid}>
         {items.map((item) => (
-          // key = instanceId : deux copies du même compte GitHub restent
-          // deux lignes distinctes pour React.
+          // Use instanceId so duplicated accounts remain distinct rows.
           <UserCard
             key={item.instanceId}
             item={item}
